@@ -171,8 +171,8 @@ function getAverage(arr) {
  *    isSameLength(['orange', 'banana', 'cherry']) => true
  *    isSameLength(['cat', 'dog', 'elephant']) => false
  */
-function isSameLength(/* arr */) {
-  throw new Error('Not implemented');
+function isSameLength(arr) {
+  return arr.every((item) => item.length === arr[0].length);
 }
 
 /**
@@ -300,7 +300,11 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size */) {
+function createNDimensionalArray(n, size) {
+  // const arr = Array(size).fill(0);
+  // return arr.map(() => {
+  //   return Array(size).fill(0);
+  // });
   throw new Error('Not implemented');
 }
 
@@ -315,8 +319,8 @@ function createNDimensionalArray(/* n, size */) {
  *    flattenArray(['a', ['b', ['c', 'd'], 'e'], 'f']) => ['a', 'b', 'c', 'd', 'e', 'f']
  *    flattenArray([1, 2, 3, 4]) => [1, 2, 3, 4]
  */
-function flattenArray(/* nestedArray */) {
-  throw new Error('Not implemented');
+function flattenArray(nestedArray) {
+  return nestedArray.flat(Infinity);
 }
 
 /**
@@ -332,8 +336,8 @@ function flattenArray(/* nestedArray */) {
  *   selectMany([[1, 2], [3, 4], [5, 6]], (x) => x) =>   [ 1, 2, 3, 4, 5, 6 ]
  *   selectMany(['one','two','three'], (x) => x.split('')) =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  return arr.flatMap(childrenSelector);
 }
 
 /**
@@ -349,8 +353,13 @@ function selectMany(/* arr, childrenSelector */) {
  *   calculateBalance([ [ 10, 8 ], [ 1, 5 ] ])  => (10 - 8) + (1 - 5) = 2 + -4 = -2
  *   calculateBalance([]) => 0
  */
-function calculateBalance(/* arr */) {
-  throw new Error('Not implemented');
+function calculateBalance(arr) {
+  if (arr.length === 0) return 0;
+  return arr
+    .map((item) => {
+      return item[0] - item[1];
+    })
+    .reduce((calc, item) => calc + item, 0);
 }
 
 /**
@@ -365,8 +374,22 @@ function calculateBalance(/* arr */) {
  *    createChunks(['a', 'b', 'c', 'd', 'e'], 2) => [['a', 'b'], ['c', 'd'], ['e']]
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
-function createChunks(/* arr, chunkSize */) {
-  throw new Error('Not implemented');
+function createChunks(arr, chunkSize) {
+  let startIdx = 0;
+
+  return arr.reduce((acc, item, idx, array) => {
+    if (startIdx === idx) {
+      if (idx + chunkSize > array.length) {
+        acc.push(array.slice(idx));
+        return acc;
+      }
+
+      acc.push(array.slice(idx, idx + chunkSize));
+      startIdx += chunkSize;
+      return acc;
+    }
+    return acc;
+  }, []);
 }
 
 /**
@@ -381,8 +404,16 @@ function createChunks(/* arr, chunkSize */) {
  *    generateOdds(2) => [ 1, 3 ]
  *    generateOdds(5) => [ 1, 3, 5, 7, 9 ]
  */
-function generateOdds(/* len */) {
-  throw new Error('Not implemented');
+function generateOdds(len) {
+  let resultNum = 1;
+  const arr = Array(len).fill(1);
+  return arr.map((item, i) => {
+    if (i === 0) {
+      return item;
+    }
+    resultNum += 2;
+    return resultNum;
+  });
 }
 
 /**
@@ -397,8 +428,10 @@ function generateOdds(/* len */) {
  *   getElementByIndices(['one','two','three'], [2]) => 'three'  (arr[2])
  *   getElementByIndices([[[ 1, 2, 3]]], [ 0, 0, 1 ]) => 2        (arr[0][0][1])
  */
-function getElementByIndices(/* arr, indices */) {
-  throw new Error('Not implemented');
+function getElementByIndices(arr, indices) {
+  return indices.reduce((acc, item) => {
+    return acc[item];
+  }, arr);
 }
 
 /**
@@ -413,8 +446,15 @@ function getElementByIndices(/* arr, indices */) {
  *  getFalsyValuesCount([ -1, 'false', null, 0 ]) => 2
  *  getFalsyValuesCount([ null, undefined, NaN, false, 0, '' ]) => 6
  */
-function getFalsyValuesCount(/* arr */) {
-  throw new Error('Not implemented');
+function getFalsyValuesCount(arr) {
+  const result = [];
+  arr.map((item) => {
+    if (!item) {
+      result.push(item);
+    }
+    return true;
+  });
+  return result.length;
 }
 
 /**
@@ -435,8 +475,21 @@ function getFalsyValuesCount(/* arr */) {
  *                              [0,0,0,1,0],
  *                              [0,0,0,0,1]]
  */
-function getIdentityMatrix(/* n */) {
-  throw new Error('Not implemented');
+function getIdentityMatrix(n) {
+  const arr = Array(n * n).fill(0);
+  const result = [];
+
+  arr.reduce((acc) => {
+    result.push(arr.splice(0, n));
+    return acc;
+  }, []);
+
+  return result.map((item, i) => {
+    return item.map((el, idx) => {
+      if (i === idx) return 1;
+      return el;
+    });
+  });
 }
 
 /**
@@ -450,8 +503,15 @@ function getIdentityMatrix(/* n */) {
  *    getIndicesOfOddNumbers([2, 4, 6, 8, 10]) => []
  *    getIndicesOfOddNumbers([11, 22, 33, 44, 55]) => [0, 2, 4]
  */
-function getIndicesOfOddNumbers(/* numbers */) {
-  throw new Error('Not implemented');
+function getIndicesOfOddNumbers(numbers) {
+  const result = [];
+  numbers.map((item, i) => {
+    if (item % 2 !== 0) {
+      result.push(i);
+    }
+    return true;
+  });
+  return result;
 }
 
 /**
@@ -464,8 +524,10 @@ function getIndicesOfOddNumbers(/* numbers */) {
  *    getHexRGBValues([ 0, 255, 16777215]) => [ '#000000', '#0000FF', '#FFFFFF' ]
  *    getHexRGBValues([]) => []
  */
-function getHexRGBValues(/* arr */) {
-  throw new Error('Not implemented');
+function getHexRGBValues(arr) {
+  return arr.map((item) => {
+    return `#${item.toString(16).toUpperCase().padStart(6, '0')}`;
+  });
 }
 
 /**
@@ -482,8 +544,15 @@ function getHexRGBValues(/* arr */) {
  *   getMaxItems([ 10, 2, 7, 5, 3, -5 ], 3) => [ 10, 7, 5 ]
  *   getMaxItems([ 10, 10, 10, 10 ], 3) => [ 10, 10, 10 ]
  */
-function getMaxItems(/* arr, n */) {
-  throw new Error('Not implemented');
+function getMaxItems(arr, n) {
+  if (arr.length === 0) return arr;
+  return arr
+    .sort((num1, num2) => {
+      if (num1 > num2) return -1;
+      if (num1 === num2) return 0;
+      return 1;
+    })
+    .slice(0, n);
 }
 
 /**
@@ -498,8 +567,13 @@ function getMaxItems(/* arr, n */) {
  *    findCommonElements(['a', 'b', 'c'], ['b', 'c', 'd']) => [ 'b', 'c' ]
  *    findCommonElements([1, 2, 3], ['a', 'b', 'c']) => []
  */
-function findCommonElements(/* arr1, arr2 */) {
-  throw new Error('Not implemented');
+function findCommonElements(arr1, arr2) {
+  const result = [];
+  arr1.map((item) => {
+    if (arr2.indexOf(item) !== -1) result.push(item);
+    return true;
+  });
+  return result;
 }
 
 /**
@@ -513,8 +587,28 @@ function findCommonElements(/* arr1, arr2 */) {
  *    findLongestIncreasingSubsequence([3, 10, 2, 1, 20]) => 2
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
-function findLongestIncreasingSubsequence(/* nums */) {
-  throw new Error('Not implemented');
+function findLongestIncreasingSubsequence(nums) {
+  let result = [];
+  const lengths = [];
+  nums.map((item, idx) => {
+    if (item < nums[idx + 1]) {
+      if (result.indexOf(item) !== -1) {
+        result.push(nums[idx + 1]);
+      } else {
+        result.push(item, nums[idx + 1]);
+      }
+      lengths.push(result.length);
+    }
+    if (item > nums[idx + 1]) {
+      result = [];
+    }
+    return true;
+  });
+  return lengths.sort((a, b) => {
+    if (a > b) return -1;
+    if (a === b) return 0;
+    return 1;
+  })[0];
 }
 
 /**
@@ -531,8 +625,12 @@ function findLongestIncreasingSubsequence(/* nums */) {
  *  propagateItemsByPositionIndex([ 'a', 'b', 'c', null ]) => [ 'a', 'b', 'b', 'c', 'c', 'c',  null, null, null, null ]
  *  propagateItemsByPositionIndex([ 1,2,3,4,5 ]) => [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5 ]
  */
-function propagateItemsByPositionIndex(/* arr */) {
-  throw new Error('Not implemented');
+function propagateItemsByPositionIndex(arr) {
+  return arr
+    .map((item, idx) => {
+      return Array(idx + 1).fill(item);
+    })
+    .flat(2);
 }
 
 /**
@@ -548,8 +646,19 @@ function propagateItemsByPositionIndex(/* arr */) {
  *    shiftArray(['a', 'b', 'c', 'd'], -1) => ['b', 'c', 'd', 'a']
  *    shiftArray([10, 20, 30, 40, 50], -3) => [40, 50, 10, 20, 30]
  */
-function shiftArray(/* arr, n */) {
-  throw new Error('Not implemented');
+function shiftArray(arr, n) {
+  const copyArr = [...arr];
+  let elem;
+
+  if (n < 0) {
+    elem = copyArr.splice(0, Math.abs(n));
+    copyArr.splice(copyArr.length - n - 1, 0, elem);
+  } else {
+    elem = copyArr.splice(0, n + 1);
+    copyArr.splice(n, 0, elem);
+  }
+
+  return copyArr.flat();
 }
 
 /**
@@ -565,8 +674,20 @@ function shiftArray(/* arr, n */) {
  *   sortDigitNamesByNumericOrder([ 'nine','eight','nine','eight' ]) => [ 'eight','eight','nine','nine']
  *   sortDigitNamesByNumericOrder([ 'one','one','one','zero' ]) => [ 'zero','one','one','one' ]
  */
-function sortDigitNamesByNumericOrder(/* arr */) {
-  throw new Error('Not implemented');
+function sortDigitNamesByNumericOrder(arr) {
+  const numArr = [
+    'zero',
+    'one',
+    'two',
+    'three',
+    'four',
+    'five',
+    'six',
+    'seven',
+    'eight',
+    'nine',
+  ];
+  return arr.sort((a, b) => numArr.indexOf(a) - numArr.indexOf(b));
 }
 
 /**
@@ -588,8 +709,37 @@ function sortDigitNamesByNumericOrder(/* arr */) {
  *   swapHeadAndTail([]) => []
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const partLeft = [];
+  const partRight = [];
+  const medium = [];
+
+  if (arr.length === 0 || arr.length === 1) return arr;
+
+  arr.map((item, i) => {
+    if (arr.length % 2 === 0) {
+      if (i < arr.length / 2) {
+        partLeft.push(item);
+      }
+      if (i > arr.length / 2 - 1) {
+        partRight.push(item);
+      }
+    }
+
+    if (arr.length % 2 !== 0) {
+      if (i < Math.floor(arr.length / 2)) {
+        partLeft.push(item);
+      }
+      if (i > Math.ceil(arr.length / 2 - 1)) {
+        partRight.push(item);
+      }
+      if (i === Math.ceil(arr.length / 2 - 1)) {
+        medium.push(item);
+      }
+    }
+    return true;
+  });
+  return partRight.concat(medium, partLeft);
 }
 
 module.exports = {
